@@ -74,7 +74,8 @@
 }).catch(e => { alert('Hiba: ' + e.code + ' - ' + e.message); });
 
         auth.onAuthStateChanged(user => {
-            if (user) {
+    alert('Auth state: ' + (user ? user.email : 'null'));
+    if (user) {
                 document.getElementById('userInfo').textContent = '👤 ' + user.displayName;
                 document.getElementById('loginBtn').style.display = 'none';
                 document.getElementById('logoutBtn').style.display = 'block';
