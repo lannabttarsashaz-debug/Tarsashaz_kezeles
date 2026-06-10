@@ -67,7 +67,11 @@
                 .catch(e => { alert('Mentési hiba: ' + e.message); });
         }
 
-        auth.getRedirectResult().catch(e => console.error(e));
+        auth.getRedirectResult().then(result => {
+    if (result && result.user) {
+        console.log('OK:', result.user.email);
+    }
+}).catch(e => { alert('Hiba: ' + e.code + ' - ' + e.message); });
 
         auth.onAuthStateChanged(user => {
             if (user) {
