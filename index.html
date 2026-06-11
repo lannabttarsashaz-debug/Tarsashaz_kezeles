@@ -10,11 +10,8 @@
         .login-box { background: white; padding: 45px 35px; border-radius: 30px; text-align: center; max-width: 380px; width: 100%; box-shadow: 0 30px 90px rgba(0,0,0,0.5); }
         .login-title { font-size: 2em; color: #d4af37; font-weight: 900; margin-bottom: 5px; letter-spacing: 2px; }
         .login-subtitle { color: #888; letter-spacing: 3px; font-size: 0.75em; text-transform: uppercase; margin-bottom: 30px; }
-        input[type="email"] { width: 100%; padding: 14px 18px; border: 2px solid #e0e0e0; border-radius: 12px; font-size: 16px; margin-bottom: 12px; outline: none; transition: border-color 0.2s; }
-        input[type="email"]:focus { border-color: #d4af37; }
-        .send-btn { width: 100%; padding: 14px; background: linear-gradient(135deg, #d4af37, #f0d060); border: none; border-radius: 12px; font-size: 16px; font-weight: 700; color: white; cursor: pointer; transition: all 0.3s; }
-        .send-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(212,175,55,0.4); }
-        .send-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+        input[type="email"] { width: 100%; padding: 14px 18px; border: 2px solid #e0e0e0; border-radius: 12px; font-size: 16px; margin-bottom: 12px; outline: none; }
+        .send-btn { width: 100%; padding: 14px; background: linear-gradient(135deg, #d4af37, #f0d060); border: none; border-radius: 12px; font-size: 16px; font-weight: 700; color: white; cursor: pointer; }
         .msg { margin-top: 15px; padding: 12px; border-radius: 10px; font-size: 14px; }
         .msg.success { background: #e8f5e9; color: #2e7d32; }
         .msg.error { background: #ffebee; color: #c62828; }
@@ -43,6 +40,14 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
+        setTimeout(function() {
+            if (typeof window.supabase === 'undefined') {
+                alert('Supabase NINCS betöltve!');
+            } else {
+                alert('Supabase OK!');
+            }
+        }, 2000);
+
         const supabase = window.supabase.createClient(
             'https://afxtwbyeqxgjddlonptj.supabase.co',
             'sb_publishable_MMAhfCJ7JKo6CIduJtKcOg_Nksp8I81'
@@ -63,7 +68,7 @@
                 btn.disabled = false;
                 btn.textContent = '✉️ Magic Link küldése';
             } else {
-                showMsg('✅ Link elküldve! Nézd meg az emailjeid és kattints a linkre.', 'success');
+                showMsg('✅ Link elküldve! Nézd meg az emailjeid.', 'success');
             }
         }
 
@@ -90,3 +95,4 @@
     </script>
 </body>
 </html>
+
