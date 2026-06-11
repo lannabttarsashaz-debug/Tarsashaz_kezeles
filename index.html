@@ -1,6 +1,101 @@
 <!DOCTYPE html>
-<html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elite Property Management</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: sans-serif; background: linear-gradient(135deg, #1a1a2e, #0f3460); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .login-box { background: white; padding: 45px 35px; border-radius: 30px; text-align: center; max-width: 380px; width: 100%; box-shadow: 0 30px 90px rgba(0,0,0,0.5); }
+        .login-title { font-size: 2em; color: #d4af37; font-weight: 900; margin-bottom: 5px; letter-spacing: 2px; }
+        .login-subtitle { color: #888; letter-spacing: 3px; font-size: 0.75em; text-transform: uppercase; margin-bottom: 30px; }
+        input[type="email"] { width: 100%; padding: 14px 18px; border: 2px solid #e0e0e0; border-radius: 12px; font-size: 16px; margin-bottom: 12px; outline: none; }
+        .send-btn { width: 100%; padding: 14px; background: linear-gradient(135deg, #d4af37, #f0d060); border: none; border-radius: 12px; font-size: 16px; font-weight: 700; color: white; cursor: pointer; }
+        .msg { margin-top: 15px; padding: 12px; border-radius: 10px; font-size: 14px; }
+        .msg.success { background: #e8f5e9; color: #2e7d32; }
+        .msg.error { background: #ffebee; color: #c62828; }
+        #mainScreen { display: none; color: white; text-align: center; padding: 30px 20px; max-width: 400px; width: 100%; }
+        #mainScreen h2 { color: #d4af37; font-size: 1.5em; margin-bottom: 10px; }
+        #mainScreen p { color: rgba(255,255,255,0.7); margin-bottom: 25px; }
+        .logout-btn { padding: 12px 28px; background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.3); border-radius: 25px; cursor: pointer; font-size: 14px; }
+    </style>
+</head>
 <body>
-<button onclick="alert('műkszik')">Nyomj meg</button>
+    <div id="loginScreen">
+        <div class="login-box">
+            <div class="login-title">ELITE PROPERTY</div>
+            <div class="login-subtitle">Management Excellence</div>
+            <input type="email" id="emailInput" placeholder="Email cím" />
+            <button class="send-btn" id="sendBtn" onclick="bejelentkezes()">✉️ Magic Link küldése</button>
+            <div id="msg"></div>
+        </div>
+    </div>
+
+    <div id="mainScreen">
+        <h2>✅ Bejelentkezve!</h2>
+        <p id="userEmail"></p>
+        <button class="logout-btn" onclick="kijelentkezes()">Kijelentkezés</button>
+    </div>
+
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script>
+        setTimeout(function() {
+            if (typeof window.supabase === 'undefined') {
+                alert('Supabase NINCS betöltve!');
+            } else {
+                alert('Supabase OK!');
+            }
+        }, 3000);
+
+        window.addEventListener('load', function() {
+            if (typeof window.supabase === 'undefined') return;
+            
+            const sb = window.supabase.createClient(
+                'https://afxtwbyeqxgjddlonptj.supabase.co',
+                'sb_publishable_MMAhfCJ7JKo6CIduJtKcOg_Nksp8I81'
+            );
+
+            window.bejelentkezes = async function() {
+                const email = document.getElementById('emailInput').value.trim();
+                if (!email) { showMsg('Add meg az email címed!', 'error'); return; }
+                const btn = document.getElementById('sendBtn');
+                btn.disabled = true;
+                btn.textContent = 'Küldés...';
+                const { error } = await sb.auth.signInWithOtp({
+                    email: email,
+                    options: { emailRedirectTo: window.location.href }
+                });
+                if (error) {
+                    showMsg('Hiba: ' + error.message, 'error');
+                    btn.disabled = false;
+                    btn.textContent = '✉️ Magic Link küldése';
+                } else {
+                    showMsg('✅ Link elküldve! Nézd meg az emailjeid.', 'success');
+                }
+            };
+
+            window.kijelentkezes = function() {
+                sb.auth.signOut().then(() => location.reload());
+            };
+
+            sb.auth.onAuthStateChange((event, session) => {
+                if (session) {
+                    document.getElementById('loginScreen').style.display = 'none';
+                    document.getElementById('mainScreen').style.display = 'block';
+                    document.getElementById('userEmail').textContent = '👤 ' + session.user.email;
+                } else {
+                    document.getElementById('loginScreen').style.display = 'flex';
+                    document.getElementById('mainScreen').style.display = 'none';
+                }
+            });
+        });
+
+        function showMsg(text, type) {
+            const msg = document.getElementById('msg');
+            msg.textContent = text;
+            msg.className = 'msg ' + type;
+        }
+    </script>
 </body>
 </html>
