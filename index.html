@@ -32,6 +32,7 @@
             <div class="login-subtitle">Management Excellence</div>
             <input type="email" id="emailInput" placeholder="Email cím" />
             <button class="send-btn" id="sendBtn" onclick="bejelentkezes()">✉️ Magic Link küldése</button>
+            <p id="teszt" style="color:red;margin-top:10px">JS betöltve</p>
             <div id="msg"></div>
         </div>
     </div>
@@ -43,6 +44,9 @@
     </div>
 
     <script>
+        document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('teszt').textContent = 'JS fut!';
+});
         const supabase = window.supabase.createClient(
             'https://afxtwbyeqxgjddlonptj.supabase.co',
             'sb_publishable_MMAhfCJ7JKo6CIduJtKcOg_Nksp8I81'
